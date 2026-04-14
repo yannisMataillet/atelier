@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required field: systemPrompt' });
   }
 
-  // Normaliser les images : accepter soit `images` (tableau), soit `image`+`mimeType` (ancien)
+  // Normaliser les images
   let imageList = [];
   if (Array.isArray(images) && images.length > 0) {
     imageList = images;
@@ -33,9 +33,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not configured' });
   }
 
-  // Construction du tableau messages pour Claude.
-  // Les images ne sont envoyées QUE dans le premier message user (économie de tokens
-  // sur les longs dialogues — Claude se souvient du visuel via l'historique texte).
+  // Construction du tableau messages
   const messages = [];
 
   const firstUserContent = imageList.map(img => ({
@@ -48,9 +46,7 @@ export default async function handler(req, res) {
   });
   messages.push({ role: 'user', content: firstUserContent });
 
-  // Historique des tours précédents (si présent)
-  // Chaque entrée = { role: 'assistant' | 'user', content: 'texte', name?: 'NomDuJuré' }
-  // On préfixe les interventions des jurés par leur nom pour que le modèle sache qui a parlé
+  // Historique
   if (Array.isArray(history)) {
     for (const turn of history) {
       if (!turn || !turn.content) continue;
@@ -63,16 +59,13 @@ export default async function handler(req, res) {
     }
   }
 
-  // Dernier message de l'étudiant (s'il vient de parler et n'est pas déjà dans l'historique)
+  // Dernier message de l'étudiant
   if (userMessage && typeof userMessage === 'string' && userMessage.trim()) {
-    // Si le dernier message du tableau est déjà 'user', on fusionne pour éviter
-    // l'erreur Anthropic "deux user messages consécutifs"
     const last = messages[messages.length - 1];
     if (last && last.role === 'user') {
       if (typeof last.content === 'string') {
         last.content = last.content + '\n\n' + userMessage;
       } else {
-        // Premier message (avec images) : on ajoute un bloc texte
         last.content.push({ type: 'text', text: userMessage });
       }
     } else {
@@ -80,27 +73,56 @@ export default async function handler(req, res) {
     }
   }
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 2048,
-      system: systemPrompt,
-      messages,
-    }),
-  });
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages,
+      }),
+    });
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Unknown error' }));
-    return res.status(response.status).json({ error: error.error?.message || 'Anthropic API error' });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('[Atelier] Anthropic API error:', response.status, JSON.stringify(error));
+      return res.status(response.status).json({ error: error.error?.message || 'Anthropic API error' });
+    }
+
+    const data = await response.json();
+
+    // === DIAGNOSTIC LOGGING ===
+    // Logs what Anthropic actually returned so we can understand empty responses
+    const stopReason = data.stop_reason;
+    const contentBlocks = data.content || [];
+    const firstBlock = contentBlocks[0];
+    const critique = firstBlock?.text ?? '';
+
+    if (!critique || !critique.trim()) {
+      console.warn('[Atelier] Empty critique returned. Diagnostic:', JSON.stringify({
+        stop_reason: stopReason,
+        content_blocks_count: contentBlocks.length,
+        first_block_type: firstBlock?.type,
+        first_block_keys: firstBlock ? Object.keys(firstBlock) : [],
+        usage: data.usage,
+      }));
+    } else {
+      console.log('[Atelier] Critique returned:', critique.length, 'chars, stop_reason:', stopReason);
+    }
+
+    return res.status(200).json({
+      critique,
+      // Diagnostic info for frontend (optional)
+      _diag: !critique ? { stop_reason: stopReason, block_type: firstBlock?.type } : undefined
+    });
+  } catch (err) {
+    console.error('[Atelier] Fetch error:', err.message);
+    return res.status(500).json({ error: err.message });
   }
-
-  const data = await response.json();
-  const critique = data.content?.[0]?.text ?? '';
-  return res.status(200).json({ critique });
 }
