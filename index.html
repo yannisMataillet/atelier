@@ -403,7 +403,31 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// Retry helper — tries up to 2 times with a delay
+// Clean up unwanted prefixes that models sometimes add
+function cleanResponse(html, jurorName) {
+  if (!html) return html;
+  let cleaned = html;
+
+  // Remove leading separators (---, ***, ___, etc.) even inside <p> tags
+  cleaned = cleaned.replace(/^(\s*<p>\s*)?[-—–*_]{2,}\s*(<\/p>\s*)?/i, '');
+
+  // Remove [JurorName] or [Any Name] prefix at the start
+  cleaned = cleaned.replace(/^(\s*<p>\s*)?\[[^\]]+\]\s*[-—–*_]*\s*(<\/p>\s*)?/i, '');
+
+  // Remove the juror's own name followed by colon or dash at the start
+  if (jurorName) {
+    const nameEscaped = jurorName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const nameRegex = new RegExp(`^(\\s*<p>\\s*)?${nameEscaped}\\s*[:—–-]+\\s*`, 'i');
+    cleaned = cleaned.replace(nameRegex, '<p>');
+  }
+
+  // Clean up any empty <p></p> at the start
+  cleaned = cleaned.replace(/^\s*<p>\s*<\/p>\s*/i, '');
+
+  return cleaned.trim();
+}
+
+// Retry helper
 async function callCritiqueAPI(body, attempt = 1) {
   const maxAttempts = 2;
   try {
@@ -442,9 +466,10 @@ async function speakerTurn(c, isOpening) {
       history: history.map(h => ({ role: h.role, name: h.name, content: h.content }))
     });
     const errMsg = currentLang === 'en' ? 'No response received.' : 'Aucune réponse reçue.';
-    const htmlOut = (data.critique && data.critique.trim()) || `<p class="error-msg">${errMsg}</p>`;
+    const rawOutput = data.critique && data.critique.trim();
+    const htmlOut = rawOutput ? cleanResponse(rawOutput, c.name) : `<p class="error-msg">${errMsg}</p>`;
     placeholder.querySelector('.turn-text').innerHTML = htmlOut;
-    if (data.critique && data.critique.trim()) {
+    if (rawOutput) {
       history.push({ role: 'assistant', name: c.name, content: htmlOut });
     }
   } catch (err) {
@@ -500,6 +525,19 @@ function buildSystemPrompt(c, isOpening, otherJurors) {
     ? `\n\nREFERENCES: When relevant to your point, cite precise cultural references from your field — architects, books, films, artworks, theorists — that the student could look up. Format: "Go look at [Architect's] [Project]" or "Read [Author], [Book]". One or two references maximum per intervention, and only when they illuminate something specific. Never cite the real architect you caricature (you are a character inspired by them, not them).`
     : `\n\nRÉFÉRENCES : Quand c'est pertinent pour ton propos, cite des références culturelles précises de ton champ — architectes, livres, films, œuvres, penseurs — que l'étudiant peut aller consulter. Format : « Va regarder le [Projet] de [Architecte] » ou « Lis [Auteur], [Livre] ». Une ou deux références maximum par intervention, et seulement quand elles éclairent quelque chose de précis. Ne cite jamais le vrai architecte que tu caricatures (tu es un personnage qui s'en inspire, pas lui).`;
 
+  // Reinforced format rules
+  const formatRules = currentLang === 'en'
+    ? `\n\nFORMAT — STRICT RULES:
+  · Start DIRECTLY with your first sentence inside a <p> tag. No separator (---, ***, ___), no line break, no preamble.
+  · NEVER write your own name at the start. NEVER write [YourName] or similar. The interface already shows who is speaking.
+  · Only use <p> and <em> tags. No headings, no lists, no other HTML.
+  · Speak in first person. No greeting, no signature, no polite closing.`
+    : `\n\nFORMAT — RÈGLES STRICTES :
+  · Commence DIRECTEMENT par ta première phrase dans une balise <p>. Aucun séparateur (---, ***, ___), aucune ligne vide, aucun préambule.
+  · N'écris JAMAIS ton propre nom au début. N'écris JAMAIS [TonNom] ou similaire. L'interface indique déjà qui parle.
+  · Utilise uniquement les balises <p> et <em>. Pas de titres, pas de listes, pas d'autre HTML.
+  · Parle en « je ». Pas de salutation, pas de signature, pas de formule de politesse.`;
+
   let consigne;
   if (isOpening) {
     consigne = currentLang === 'en'
@@ -507,19 +545,15 @@ function buildSystemPrompt(c, isOpening, otherJurors) {
       : `C'EST TOI QUI OUVRES LE JURY. Tu prends la parole en premier devant l'étudiant.\n\nBrève introduction (1 phrase max), puis ta première réaction au projet, puis UNE question posée directement à l'étudiant. La question peut être :\n  — une question de LECTURE si un élément du dessin est ambigu\n  — une question de FOND ("pourquoi ce programme ici ?")\n  — une question sur un document MANQUANT\n\nSois bref : 2 paragraphes courts maximum. Tu n'es pas seul, d'autres parleront après toi.`;
   } else {
     consigne = currentLang === 'en'
-      ? `YOU TAKE THE FLOOR IN YOUR TURN. You have read the whole preceding exchange. Other critics' past interventions are prefixed by their name in brackets, e.g.: [Peter Sturm] ...\n\nABSOLUTE RULE: You speak ONLY in your own name. You NEVER write dialogue put in the mouth of another critic. You NEVER start a paragraph with [ColleagueName]. If you want to evoke what a colleague said, quote them in the third person ("Peter speaks of atmosphere, but…") without imitating their voice.\n\nYou may: bounce off what a colleague said, agree and reinforce, gently mock, ignore and ask your own question, react to the student's last reply, flag an ambiguity no one noticed.\n\nEnd with ONE question to the student, unless your intervention is purely a jab at a colleague.\n\nStay BRIEF: 1 to 2 short paragraphs. Don't repeat.`
-      : `TU PRENDS LA PAROLE À TON TOUR. Tu as lu tout l'échange qui précède. Les interventions des autres jurés sont préfixées par leur nom entre crochets, ex : [Peter Sturm] ...\n\nRÈGLE ABSOLUE : Tu parles UNIQUEMENT en ton propre nom. Tu n'écris JAMAIS de dialogue mis dans la bouche d'un autre juré. Tu ne commences JAMAIS un paragraphe par [NomDuCollègue]. Si tu veux évoquer ce qu'a dit un collègue, cite-le à la troisième personne ("Peter parle d'atmosphère, mais…") sans imiter sa voix.\n\nTu peux : rebondir sur ce qu'a dit un collègue, être d'accord et appuyer son point, te moquer gentiment, ignorer et poser ta propre question, réagir à la dernière réponse de l'étudiant, signaler une ambiguïté que personne n'a relevée.\n\nTermine par UNE question posée à l'étudiant, sauf si ton intervention est purement une pique adressée à un collègue.\n\nReste BREF : 1 à 2 paragraphes courts. Ne te répète pas.`;
+      ? `YOU TAKE THE FLOOR IN YOUR TURN. You have read the whole preceding exchange. Other critics' past interventions are prefixed by their name in brackets, e.g.: [Peter Sturm] ... THESE MARKERS EXIST ONLY IN THE HISTORY TO SHOW YOU WHO SPOKE. You must NEVER reproduce this format in your own answer.\n\nABSOLUTE RULE: You speak ONLY in your own name. You NEVER write dialogue put in the mouth of another critic. If you want to evoke what a colleague said, quote them in the third person ("Peter speaks of atmosphere, but…") without imitating their voice.\n\nYou may: bounce off what a colleague said, agree and reinforce, gently mock, ignore and ask your own question, react to the student's last reply, flag an ambiguity no one noticed.\n\nEnd with ONE question to the student, unless your intervention is purely a jab at a colleague.\n\nStay BRIEF: 1 to 2 short paragraphs. Don't repeat.`
+      : `TU PRENDS LA PAROLE À TON TOUR. Tu as lu tout l'échange qui précède. Les interventions des autres jurés sont préfixées par leur nom entre crochets, ex : [Peter Sturm] ... CES MARQUEURS EXISTENT UNIQUEMENT DANS L'HISTORIQUE POUR T'INDIQUER QUI A PARLÉ. Tu ne dois JAMAIS reproduire ce format dans ta propre réponse.\n\nRÈGLE ABSOLUE : Tu parles UNIQUEMENT en ton propre nom. Tu n'écris JAMAIS de dialogue mis dans la bouche d'un autre juré. Si tu veux évoquer ce qu'a dit un collègue, cite-le à la troisième personne ("Peter parle d'atmosphère, mais…") sans imiter sa voix.\n\nTu peux : rebondir sur ce qu'a dit un collègue, être d'accord et appuyer son point, te moquer gentiment, ignorer et poser ta propre question, réagir à la dernière réponse de l'étudiant, signaler une ambiguïté que personne n'a relevée.\n\nTermine par UNE question posée à l'étudiant, sauf si ton intervention est purement une pique adressée à un collègue.\n\nReste BREF : 1 à 2 paragraphes courts. Ne te répète pas.`;
   }
 
   const header = currentLang === 'en'
     ? `You are ${c.name}, an architecture critic, member of a school jury.\n\nORIGIN: ${c.origin}\n\nMANIFESTO: « ${c.manifesto} »\n\nYOUR REFERENCE PROJECTS:\n${projects}\n\nQUESTIONS YOU ALWAYS ASK:\n${obsessions}\n\nASSUMED BLIND SPOT: ${c.blindspot}\n\nVOCABULARY: ${c.lexicon.join(', ')}\n\nOTHER JURY MEMBERS (you may name them, reply to them, disagree with them):\n${others}\n\nDOCUMENTS SUBMITTED BY THE STUDENT:\n${docsDesc}`
     : `Tu es ${c.name}, critique d'architecture, membre d'un jury d'école.\n\nORIGINE : ${c.origin}\n\nMANIFESTE : « ${c.manifesto} »\n\nTES PROJETS DE RÉFÉRENCE :\n${projects}\n\nQUESTIONS QUE TU POSES TOUJOURS :\n${obsessions}\n\nANGLE MORT ASSUMÉ : ${c.blindspot}\n\nVOCABULAIRE : ${c.lexicon.join(', ')}\n\nLES AUTRES MEMBRES DU JURY (tu peux les nommer, leur répondre, t'opposer à eux) :\n${others}\n\nDOCUMENTS SOUMIS PAR L'ÉTUDIANT :\n${docsDesc}`;
 
-  const footer = currentLang === 'en'
-    ? `\n\nRespond in HTML with only <p> and <em> tags. Speak in first person. No greeting, no polite preamble, no signature.`
-    : `\n\nRéponds en HTML avec uniquement des balises <p> et <em>. Parle en « je ». Pas de salut, pas de préambule poli, pas de signature.`;
-
-  return header + langInstruction + referencesInstruction + '\n\n' + consigne + footer;
+  return header + langInstruction + referencesInstruction + formatRules + '\n\n' + consigne;
 }
 
 loadJurors();
