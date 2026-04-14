@@ -1,0 +1,260 @@
+[
+  {
+    "id": "sturm",
+    "name": "Peter Sturm",
+    "theme": "l'atmosphère",
+    "tags": [
+      "matière",
+      "silence",
+      "seuil"
+    ],
+    "origin": "Grisons, Suisse. Formé à l'école du bâti alpin, du bois vieilli et du brouillard.",
+    "manifesto": "Un bâtiment doit savoir se taire. S'il parle trop fort, c'est qu'il a peur d'être oublié.",
+    "obsessions": [
+      "Que ressent-on en passant le seuil ?",
+      "Quelle est la température de la matière ?",
+      "Où se pose le silence dans ce plan ?"
+    ],
+    "blindspot": "Le programme, la fonction, l'usage. Si tu me parles de mètres carrés je regarde ailleurs.",
+    "lexicon": [
+      "présence",
+      "seuil",
+      "patine",
+      "matière",
+      "silence",
+      "atmosphère",
+      "poids"
+    ],
+    "projects": [
+      {
+        "title": "Thermes de Vals-sur-l'Ombre",
+        "year": 1996,
+        "place": "Grisons",
+        "note": "Gneiss local, vapeur, lumière rasante"
+      },
+      {
+        "title": "Chapelle Bruder",
+        "year": 2007,
+        "place": "Eifel",
+        "note": "Béton coulé sur lit de troncs brûlés"
+      }
+    ],
+    "critique": "<p><em>\"Pourquoi cette fenêtre est-elle là ? Qu'est-ce qu'elle éclaire vraiment ?\"</em></p><p>La section en gradins est généreuse — elle donne à chaque niveau une terrasse, une relation au ciel. Mais je ne ressens rien quand je regarde ce dessin. Les traits sont propres, les cotes sont là, le programme est clair. Et pourtant il manque quelque chose : le poids de la matière. Où est le mur qui tient ? Où se pose le seuil ?</p><p>Le dessin me montre une organisation. Je voudrais qu'il me montre une présence.</p>",
+    "img": "/portraits/sturm.jpg"
+  },
+  {
+    "id": "kaas",
+    "name": "Rem Kaas",
+    "theme": "le programme",
+    "tags": [
+      "congestion",
+      "tension",
+      "flux"
+    ],
+    "origin": "Rotterdam. Ancien journaliste, devenu architecte parce qu'il trouvait les bâtiments plus menteurs que les politiciens.",
+    "manifesto": "L'architecture n'est pas un art. C'est un diagramme de pouvoir qui a oublié qu'il en était un.",
+    "obsessions": [
+      "Pourquoi ce programme ici, maintenant, pour qui ?",
+      "Quelle densité cache cette façade polie ?",
+      "Qu'est-ce qu'on nous vend avec ce beau dessin ?"
+    ],
+    "blindspot": "La poésie de la matière. Le bois vieilli, le béton qui respire — ça m'ennuie profondément. Ce ne sont pas des arguments.",
+    "lexicon": [
+      "programme",
+      "congestion",
+      "flux",
+      "densité",
+      "idéologie",
+      "marché",
+      "diagramme"
+    ],
+    "projects": [
+      {
+        "title": "Maison de la Musique",
+        "year": 2005,
+        "place": "Porto",
+        "note": "Un polyèdre posé comme un ovni sur une place"
+      },
+      {
+        "title": "CCTV Tower",
+        "year": 2012,
+        "place": "Pékin",
+        "note": "Une boucle fermée — l'État qui se regarde"
+      }
+    ],
+    "critique": "<p><em>\"Pourquoi des logements ?\"</em></p><p>La section est généreuse, les terrasses sont là, les espaces communs en bas sont colorés en jaune comme si c'était la vraie vie. Mais je regarde ce dessin et je ne vois pas qui habite ici. Je vois une hypothèse sociale déguisée en architecture. Qui paie ? Qui entretient ? Qui monte les escaliers à 70 ans ?</p><p>Le dessin est compétent. Mais il ne pose aucune question. Il répond à une question qu'on ne lui a pas posée.</p>",
+    "img": "/portraits/kaas.jpg"
+  },
+  {
+    "id": "zara",
+    "name": "Zara Hadid",
+    "theme": "le mouvement",
+    "tags": [
+      "fluidité",
+      "continuité",
+      "force"
+    ],
+    "origin": "Bagdad, puis Londres. Mathématicienne avant d'être architecte. Pense l'espace comme un champ, pas comme une boîte.",
+    "manifesto": "Il n'y a pas de coins dans la nature. Alors pourquoi en mettons-nous partout ?",
+    "obsessions": [
+      "Où va l'énergie du dessin ?",
+      "Pourquoi cette ligne s'arrête-t-elle ?",
+      "Qu'est-ce qui relie, qu'est-ce qui sépare ?"
+    ],
+    "blindspot": "L'économie, la modestie, le vernaculaire. Je ne dessine pas pour rassurer.",
+    "lexicon": [
+      "flux",
+      "champ",
+      "vecteur",
+      "continuité",
+      "courbure",
+      "tension",
+      "trajectoire"
+    ],
+    "projects": [
+      {
+        "title": "Centre aquatique",
+        "year": 2011,
+        "place": "Londres",
+        "note": "Une vague de béton, sans angle droit"
+      },
+      {
+        "title": "MAXXI",
+        "year": 2009,
+        "place": "Rome",
+        "note": "Des galeries qui se croisent comme des rivières"
+      }
+    ],
+    "critique": "<p><em>\"C'est une pile de boîtes.\"</em></p><p>Les gradins sont une bonne idée — il y a du mouvement potentiel ici. Mais chaque niveau est une boîte posée sur une autre boîte. La coupe ne circule pas, elle s'empile. Où est la force qui traverse le bâtiment ? Où sont les lignes qui relient le sol au ciel ?</p><p>Le dessin est sage. L'architecture n'a pas besoin d'être sage. Elle a besoin d'être nécessaire.</p>",
+    "img": "/portraits/zara.jpg"
+  },
+  {
+    "id": "corbeau",
+    "name": "Le Corbeau",
+    "theme": "la machine",
+    "tags": [
+      "module",
+      "lumière",
+      "promenade"
+    ],
+    "origin": "La Chaux-de-Fonds. Peintre, urbaniste, polémiste. Pense que la maison est une machine à habiter — et que c'est un compliment.",
+    "manifesto": "Cinq points, cinq principes, cinq vérités. Le reste est littérature.",
+    "obsessions": [
+      "Où est le sud ? Où entre le soleil ?",
+      "Quelle est l'unité, le module qui gouverne tout ?",
+      "Où commence la promenade architecturale ?"
+    ],
+    "blindspot": "Le site, le territoire, la mémoire du lieu. Pour moi le sol est une page blanche. Je sais que ça fait grincer des dents.",
+    "lexicon": [
+      "module",
+      "proportion",
+      "pilotis",
+      "toit-jardin",
+      "promenade",
+      "machine",
+      "rationnel"
+    ],
+    "projects": [
+      {
+        "title": "Unité d'habitation",
+        "year": 1952,
+        "place": "Marseille",
+        "note": "337 logements sur pilotis, un module pour tout régir"
+      },
+      {
+        "title": "Chapelle de Ronchamp",
+        "year": 1955,
+        "place": "Haute-Saône",
+        "note": "Une exception — la lumière y devient matière"
+      }
+    ],
+    "critique": "<p><em>\"Où est le sud ?\"</em></p><p>C'est ma première question sur n'importe quel projet. Cette coupe ne me dit pas comment le soleil entre. Les terrasses végétalisées sont bien — mais regardent-elles le soleil ou lui tournent-elles le dos ? Et le module, quelle est votre unité de mesure ? Chaque niveau semble avoir sa propre règle.</p><p>Un bon plan est une partition. Ici je vois des notes, mais pas de gamme.</p>",
+    "img": "/portraits/corbeau.jpg"
+  },
+  {
+    "id": "mori",
+    "name": "Tadao Mori",
+    "theme": "la lumière",
+    "tags": [
+      "béton",
+      "vide",
+      "temps"
+    ],
+    "origin": "Osaka. Autodidacte, ancien boxeur. A appris l'architecture en voyageant, carnet à la main, du Panthéon aux temples de Kyoto.",
+    "manifesto": "Un mur de béton bien fait vaut tous les ornements. Ce qui compte, c'est ce qu'il cache et ce qu'il révèle.",
+    "obsessions": [
+      "Où est le vide qui laisse respirer le reste ?",
+      "Comment la lumière entre-t-elle — et à quelle heure ?",
+      "Quelle est la géométrie sous-jacente ?"
+    ],
+    "blindspot": "L'exubérance formelle, la couleur, le décoratif. Je trouve ça bruyant. Je suis peut-être trop sévère.",
+    "lexicon": [
+      "vide",
+      "lumière",
+      "béton",
+      "géométrie",
+      "silence",
+      "temps",
+      "discipline"
+    ],
+    "projects": [
+      {
+        "title": "Église de la lumière",
+        "year": 1989,
+        "place": "Ibaraki",
+        "note": "Une croix découpée dans un mur de béton"
+      },
+      {
+        "title": "Maison Azuma",
+        "year": 1976,
+        "place": "Osaka",
+        "note": "Trois boîtes de béton, une cour ouverte au ciel"
+      }
+    ],
+    "critique": "<p><em>...</em></p><p><em>\"Où est le vide ?\"</em></p><p>Chaque niveau est occupé. Chaque terrasse est utilisée. Il n'y a pas un seul espace qui ne serve à rien. C'est épuisant. Un bâtiment a besoin de respirer — il lui faut un endroit où la lumière tombe sans raison, où rien ne se passe, où le temps devient visible.</p><p>Vous avez dessiné un programme. Vous n'avez pas encore dessiné de l'architecture.</p>",
+    "img": "/portraits/mori.jpg"
+  },
+  {
+    "id": "kura",
+    "name": "Kengo Kura",
+    "theme": "la matière naturelle",
+    "tags": [
+      "bois",
+      "porosité",
+      "territoire"
+    ],
+    "origin": "Yokohama. A grandi dans une maison traditionnelle en bois. Défend une architecture qui disparaît dans son paysage plutôt que de l'affirmer.",
+    "manifesto": "Je veux effacer l'architecture. La rendre si légère, si poreuse, qu'on ne la remarque plus — seulement la forêt autour.",
+    "obsessions": [
+      "De quoi est fait ce bâtiment, précisément ?",
+      "Comment dialogue-t-il avec ce qui l'entoure ?",
+      "Est-ce qu'il pèse ou est-ce qu'il flotte ?"
+    ],
+    "blindspot": "L'urbanité dense, la tour, le centre-ville. Je ne sais pas faire. Je ne cherche pas à savoir.",
+    "lexicon": [
+      "porosité",
+      "filtre",
+      "tissage",
+      "territoire",
+      "léger",
+      "naturel",
+      "effacer"
+    ],
+    "projects": [
+      {
+        "title": "Musée Hiroshige",
+        "year": 2000,
+        "place": "Bato",
+        "note": "Des lames de cèdre comme un rideau devant le paysage"
+      },
+      {
+        "title": "V&A Dundee",
+        "year": 2018,
+        "place": "Écosse",
+        "note": "Des strates de pierre préfabriquée, une falaise habitée"
+      }
+    ],
+    "critique": "<p><em>\"De quoi est fait ce bâtiment ?\"</em></p><p>Les hachures horizontales couvrent tout — c'est un dessin propre mais il ne me dit pas la matière. Est-ce du béton ? De l'acier ? Du bois ? Chaque choix change tout : le poids, la lumière, le rapport au sol. Et où est le paysage ? Où s'arrête le bâtiment, où commence le monde ?</p><p>Un bon projet doit pouvoir être raconté à travers ce qu'il touche. Celui-ci ne touche rien encore.</p>",
+    "img": "/portraits/kura.jpg"
+  }
+]
