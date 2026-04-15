@@ -565,19 +565,6 @@ Une ou deux références maximum par intervention, et seulement quand elles écl
   · Balises HTML autorisées : <p>, <em> (pour l'emphase), <cite> (pour les références). Pas de titres, pas de listes, pas d'autre HTML.
   · Parle en « je ». Pas de salutation, pas de signature, pas de formule de politesse.`;
 
-  // Reinforced format rules
-  const formatRules = currentLang === 'en'
-    ? `\n\nFORMAT — STRICT RULES:
-  · Start DIRECTLY with your first sentence inside a <p> tag. No separator (---, ***, ___), no line break, no preamble.
-  · NEVER write your own name at the start. NEVER write [YourName] or similar. The interface already shows who is speaking.
-  · Only use <p> and <em> tags. No headings, no lists, no other HTML.
-  · Speak in first person. No greeting, no signature, no polite closing.`
-    : `\n\nFORMAT — RÈGLES STRICTES :
-  · Commence DIRECTEMENT par ta première phrase dans une balise <p>. Aucun séparateur (---, ***, ___), aucune ligne vide, aucun préambule.
-  · N'écris JAMAIS ton propre nom au début. N'écris JAMAIS [TonNom] ou similaire. L'interface indique déjà qui parle.
-  · Utilise uniquement les balises <p> et <em>. Pas de titres, pas de listes, pas d'autre HTML.
-  · Parle en « je ». Pas de salutation, pas de signature, pas de formule de politesse.`;
-
   let consigne;
   if (isOpening) {
     consigne = currentLang === 'en'
