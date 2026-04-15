@@ -65,6 +65,7 @@ body{background:var(--bg);color:var(--ink);font-family:ui-monospace,"SF Mono",Me
 .turn-text p{margin-bottom:0.7rem}
 .turn-text p:last-child{margin-bottom:0}
 .turn-text em{font-style:italic;opacity:0.8}
+.turn-text cite{font-style:normal;border-bottom:0.5px dotted var(--muted);font-weight:500;color:var(--ink);cursor:help;padding-bottom:1px}
 .turn.student{flex-direction:row-reverse}
 .turn.student .turn-portrait{background:var(--surface);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;color:var(--muted);font-size:12px}
 .turn.student .turn-author{text-align:right}
@@ -79,9 +80,17 @@ body{background:var(--bg);color:var(--ink);font-family:ui-monospace,"SF Mono",Me
 @keyframes dots{0%,20%{content:'.'}40%{content:'..'}60%,100%{content:'...'}}
 .loading-chars{text-align:center;padding:4rem 0;font-family:Georgia,serif;font-style:italic;color:var(--muted)}
 .error-msg{color:var(--ink-soft);font-style:italic;opacity:0.7}
+.footer{margin-top:5rem;padding-top:2rem;border-top:0.5px solid var(--border);text-align:center;font-size:11px;color:var(--muted);line-height:1.9}
+.footer p{margin:0}
+.footer a{color:var(--ink-soft);text-decoration:none;border-bottom:0.5px dotted var(--muted)}
+.footer a:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.footer .footer-research{font-family:Georgia,serif;font-style:italic;font-size:13px;opacity:0.85;display:inline-block;margin-top:0.5rem}
 [data-i18n-fr],[data-i18n-en]{display:none}
 html[lang="fr"] [data-i18n-fr]{display:inline}
 html[lang="en"] [data-i18n-en]{display:inline}
+html[lang="fr"] [data-i18n-fr-block]{display:block}
+html[lang="en"] [data-i18n-en-block]{display:block}
+[data-i18n-fr-block],[data-i18n-en-block]{display:none}
 #fi{display:none}
 .hidden{display:none !important}
 </style>
@@ -173,6 +182,15 @@ html[lang="en"] [data-i18n-en]{display:inline}
         </button>
       </div>
     </div>
+  </div>
+
+  <div class="footer">
+    <p data-i18n-fr-block>Atelier — un outil du programme <a href="https://axone.design">Axone</a></p>
+    <p data-i18n-en-block>Atelier — a tool from the <a href="https://axone.design">Axone</a> program</p>
+    <p data-i18n-fr-block>construit par <a href="mailto:yannis@axone.design">yannis@axone.design</a> — curieux de vos retours</p>
+    <p data-i18n-en-block>built by <a href="mailto:yannis@axone.design">yannis@axone.design</a> — curious to hear your thoughts</p>
+    <p data-i18n-fr-block><span class="footer-research">recherche à la croisée de l'architecture et du storytelling</span></p>
+    <p data-i18n-en-block><span class="footer-research">research at the intersection of architecture and storytelling</span></p>
   </div>
 </div>
 
@@ -428,6 +446,7 @@ function cleanResponse(html, jurorName) {
 }
 
 // Retry helper
+
 async function callCritiqueAPI(body, attempt = 1) {
   const maxAttempts = 2;
   try {
@@ -521,9 +540,30 @@ function buildSystemPrompt(c, isOpening, otherJurors) {
     ? `\n\nLANGUAGE: Respond in ENGLISH. The student is reading the interface in English.`
     : `\n\nLANGUE : Réponds en FRANÇAIS. L'étudiant lit l'interface en français.`;
 
+  // Reinforced references instruction with <cite> tag
   const referencesInstruction = currentLang === 'en'
-    ? `\n\nREFERENCES: When relevant to your point, cite precise cultural references from your field — architects, books, films, artworks, theorists — that the student could look up. Format: "Go look at [Architect's] [Project]" or "Read [Author], [Book]". One or two references maximum per intervention, and only when they illuminate something specific. Never cite the real architect you caricature (you are a character inspired by them, not them).`
-    : `\n\nRÉFÉRENCES : Quand c'est pertinent pour ton propos, cite des références culturelles précises de ton champ — architectes, livres, films, œuvres, penseurs — que l'étudiant peut aller consulter. Format : « Va regarder le [Projet] de [Architecte] » ou « Lis [Auteur], [Livre] ». Une ou deux références maximum par intervention, et seulement quand elles éclairent quelque chose de précis. Ne cite jamais le vrai architecte que tu caricatures (tu es un personnage qui s'en inspire, pas lui).`;
+    ? `\n\nREFERENCES: When relevant to your point, cite precise cultural references from your field — architects, projects, books, films, artworks, theorists — that the student could go and consult. ALWAYS wrap the proper noun of the reference (project name, author name, work title) in a <cite> tag so it appears visually distinct from the rest of your text. Examples:
+  · "Go look at the <cite>Barcelona Pavilion</cite> by <cite>Mies van der Rohe</cite>"
+  · "Read <cite>L'Espèce humaine</cite> by <cite>Robert Antelme</cite>"
+  · "Watch <cite>Le Mépris</cite> by <cite>Jean-Luc Godard</cite>"
+One or two references maximum per intervention, and only when they illuminate something specific. Never cite the real architect you caricature (you are a character inspired by them, not them). Use <cite> ONLY for proper nouns being recommended for consultation, NOT for emphasis. For emphasis, keep using <em>.`
+    : `\n\nRÉFÉRENCES : Quand c'est pertinent pour ton propos, cite des références culturelles précises de ton champ — architectes, projets, livres, films, œuvres, penseurs — que l'étudiant peut aller consulter. Entoure TOUJOURS le nom propre de la référence (nom de projet, nom d'auteur, titre d'œuvre) avec une balise <cite> pour qu'elle soit visuellement distincte du reste du texte. Exemples :
+  · « Va regarder le <cite>Pavillon de Barcelone</cite> de <cite>Mies van der Rohe</cite> »
+  · « Lis <cite>L'Espèce humaine</cite> de <cite>Robert Antelme</cite> »
+  · « Regarde <cite>Le Mépris</cite> de <cite>Jean-Luc Godard</cite> »
+Une ou deux références maximum par intervention, et seulement quand elles éclairent quelque chose de précis. Ne cite jamais le vrai architecte que tu caricatures (tu es un personnage qui s'en inspire, pas lui). Utilise <cite> UNIQUEMENT pour les noms propres recommandés à consulter, PAS pour l'emphase. Pour l'emphase, continue d'utiliser <em>.`;
+
+  const formatRules = currentLang === 'en'
+    ? `\n\nFORMAT — STRICT RULES:
+  · Start DIRECTLY with your first sentence inside a <p> tag. No separator (---, ***, ___), no line break, no preamble.
+  · NEVER write your own name at the start. NEVER write [YourName] or similar. The interface already shows who is speaking.
+  · Allowed HTML tags: <p>, <em> (for emphasis), <cite> (for references). No headings, no lists, no other HTML.
+  · Speak in first person. No greeting, no signature, no polite closing.`
+    : `\n\nFORMAT — RÈGLES STRICTES :
+  · Commence DIRECTEMENT par ta première phrase dans une balise <p>. Aucun séparateur (---, ***, ___), aucune ligne vide, aucun préambule.
+  · N'écris JAMAIS ton propre nom au début. N'écris JAMAIS [TonNom] ou similaire. L'interface indique déjà qui parle.
+  · Balises HTML autorisées : <p>, <em> (pour l'emphase), <cite> (pour les références). Pas de titres, pas de listes, pas d'autre HTML.
+  · Parle en « je ». Pas de salutation, pas de signature, pas de formule de politesse.`;
 
   // Reinforced format rules
   const formatRules = currentLang === 'en'
